@@ -3,12 +3,13 @@ import "izitoast/dist/css/iziToast.min.css";
 
 const form = document.querySelector('form');
 const delayInput = document.querySelector('input[name="delay"]');
-const stateInput = document.querySelector('input[name="state"]');
+const stateInputs = document.querySelectorAll('input[name="state"]');
+const resetButton = document.querySelector('button[type="reset"]');
 
 form.addEventListener('submit', function(event) {
   event.preventDefault();
 
-  if (!delayInput.checkValidity() || !stateInput.checked) {
+  if (!delayInput.checkValidity() || !getSelectedState()) {
     iziToast.error({
       title: 'Error',
       message: 'Please fill in all fields',
@@ -18,7 +19,7 @@ form.addEventListener('submit', function(event) {
   }
 
   const delay = parseInt(delayInput.value, 10);
-  const state = stateInput.value;
+  const state = getSelectedState();
 
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -45,4 +46,22 @@ form.addEventListener('submit', function(event) {
         position: 'topRight',
       });
     });
+
+  resetForm();
 });
+
+resetButton.addEventListener('click', resetForm);
+
+function getSelectedState() {
+  let selectedState = '';
+  stateInputs.forEach((input) => {
+    if (input.checked) {
+      selectedState = input.value;
+    }
+  });
+  return selectedState;
+}
+
+function resetForm() {
+  form.reset();
+}

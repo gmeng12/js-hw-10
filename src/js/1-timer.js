@@ -9,7 +9,8 @@ const startButton = document.querySelector('[data-start]');
 let countdownInterval;
 let userSelectedDate;
 let differenceMs;
-const currentDate = new Date();
+let countdownStarted = false;
+let currentDate;
 
 const options = {
   enableTime: true,
@@ -21,6 +22,7 @@ const options = {
 
     if (!userSelectedDate) {
       startButton.disabled = true;
+      countdownStarted = false;
       if (countdownInterval) {
   clearInterval(countdownInterval);
 }
@@ -34,32 +36,36 @@ const options = {
         message: 'Please choose a date in the future',
       });
       updateCountdownUI({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      countdownStarted = false;
     } else {
       startButton.disabled = false;
       clearInterval(countdownInterval);
       const initialCountdown = convertMs(userSelectedDate.getTime() - currentDate.getTime());
-      updateCountdownUI(initialCountdown);
+      updateCountdownUI();
+      countdownStarted = false;
     }
   },
 };
-
+currentDate = new Date();
 flatpickr('#datetime-picker', options);
 
 
 startButton.addEventListener('click', startCountdown);
 
 function updateCountdown() {
-  const { days, hours, minutes, seconds } = convertMs(differenceMs);
-  updateCountdownUI({ days, hours, minutes, seconds });
-
   if (differenceMs <= 0) {
     clearInterval(countdownInterval);
     startButton.disabled = true;
     dateTimePicker.disabled = false;
+  } else {
+    const { days, hours, minutes, seconds } = convertMs(differenceMs);
+    updateCountdownUI({ days, hours, minutes, seconds });
   }
 
   differenceMs = differenceMs - 1000;
 }
+
+startButton.disabled = true;
 
 function startCountdown() {
   if (!userSelectedDate) {
@@ -70,7 +76,11 @@ function startCountdown() {
     return;
   }
 
-    differenceMs = userSelectedDate.getTime() - currentDate.getTime();
+if (!countdownStarted) {
+  differenceMs = userSelectedDate.getTime() - currentDate.getTime();
+  countdownStarted = true; 
+  }
+  
      updateCountdown();
     
     startButton.disabled = true;
