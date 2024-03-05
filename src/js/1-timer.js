@@ -41,7 +41,6 @@ const options = {
       startButton.disabled = false;
       clearInterval(countdownInterval);
       const initialCountdown = convertMs(userSelectedDate.getTime() - currentDate.getTime());
-      updateCountdownUI();
       countdownStarted = false;
     }
   },
@@ -53,6 +52,8 @@ flatpickr('#datetime-picker', options);
 startButton.addEventListener('click', startCountdown);
 
 function updateCountdown() {
+  currentDate = new Date();
+  
   if (differenceMs <= 0) {
     clearInterval(countdownInterval);
     startButton.disabled = true;

@@ -50,8 +50,6 @@ form.addEventListener('submit', function(event) {
   resetForm();
 });
 
-resetButton.addEventListener('click', resetForm);
-
 function getSelectedState() {
   let selectedState = '';
   stateInputs.forEach((input) => {
